@@ -1,0 +1,17 @@
+# Dependencies & Build Outputs
+node_modules/
+.venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/
+build/
+.tmp/
+
+# LinkedIn Promotional Assets & Intermediates (Do NOT push to GitHub)
+linkedin_post.md
+linkedin_poster.gif
+linkedin_carousel.pdf
+*.pdf
+*.gif
