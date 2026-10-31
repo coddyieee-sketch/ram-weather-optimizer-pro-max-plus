@@ -42,15 +42,23 @@ async def reset_data():
     DATA_STORE = []
     return {"message": "Data reset successfully"}
 
-@app.get("/stats/")
-async def read_stats():
-    return {"data_count": len(DATA_STORE)}
+@app.get("/status")
+async def get_status():
+    return {"status": "OK"}
 
-@app.post("/submit/")
+@app.get("/metrics")
+async def get_metrics():
+    return {"metrics": "OK"}
+
+@app.post("/submit")
 async def submit_data(data: Data):
     DATA_STORE.append(data.dict())
     return {"message": "Data submitted successfully"}
 
-@app.get("/logs/")
-async def read_logs():
-    return DATA_STORE
+@app.get("/logs")
+async def get_logs():
+    return {"logs": "OK"}
+
+@app.get("/visualizer")
+async def get_visualizer():
+    return {"visualizer": "OK"}
