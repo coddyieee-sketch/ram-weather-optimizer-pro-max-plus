@@ -4,35 +4,35 @@
 [![React: 18+](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
 
 ## Executive Overview
-The ram-weather-optimizer-pro-max-plus project aims to optimize Windows 11's built-in Weather app RAM usage with real-time metrics and interactive dashboards. This project utilizes a FastAPI backend, a React frontend, and Tailwind CSS for styling.
+The ram-weather-optimizer-pro-max-plus project aims to optimize Windows 11's built-in Weather app RAM usage with real-time metrics and interactive dashboards. This project utilizes FastAPI, Python, React (Vite), and TailwindCSS to provide a comprehensive solution.
 
 ## Feature Breakdown
-- Real-time RAM usage metrics
-- Interactive dashboards for data visualization
-- FastAPI backend for handling API requests
-- React frontend for user interaction
-- Tailwind CSS for styling and layout
+* Real-time metrics and interactive dashboards for Windows 11 Weather app RAM usage
+* FastAPI backend for handling API requests and storing data in-memory
+* React frontend with Vite and TailwindCSS for a modern and responsive UI
+* Automated testing setup using pytest for ensuring API endpoint functionality
 
 ## API Contract Summary
-The API consists of the following endpoints:
-- `POST /data`: Submit new data to the in-memory store
-- `GET /data`: Retrieve all data from the in-memory store
-- `POST /reset`: Reset the in-memory data store
+The FastAPI backend exposes the following API endpoints:
+* `POST /data`: Submit data to the in-memory store
+* `GET /data`: Retrieve data from the in-memory store
+* `POST /reset`: Reset the in-memory data store
 
 ## End-to-End System Architecture Flow Diagram
 ```mermaid
 graph LR
-    A[User] -->|Interact with Frontend| B[React Frontend]
-    B -->|Submit Data| C[FastAPI Backend]
-    C -->|Process Data| D[In-Memory Data Store]
-    D -->|Store Data| D
-    B -->|Request Data| C
-    C -->|Retrieve Data| D
-    D -->|Return Data| C
-    C -->|Return Data| B
-    B -->|Display Data| A
-    C -->|Reset Data| D
-    D -->|Clear Data| D
+    A[User] -->|Interacts with Weather app| B[Windows 11 Weather app]
+    B -->|Consumes RAM| C[RAM Usage]
+    C -->|Triggers API request| D[React Frontend]
+    D -->|Sends API request| E[FastAPI Backend]
+    E -->|Processes API request| F[In-Memory Data Store]
+    F -->|Stores data| G[Data Storage]
+    G -->|Returns data| E
+    E -->|Returns API response| D
+    D -->|Renders UI| A
+    E -->|Updates in-memory store| F
+    F -->|Triggers reset| E
+    E -->|Resets in-memory store| F
 ```
 
 ## Step-by-Step Commands
@@ -41,12 +41,11 @@ graph LR
 2. Start the backend: `uvicorn backend.app:app --reload --port 8000`
 
 ### Frontend
-1. Change directory: `cd frontend`
-2. Install packages: `npm install`
-3. Start the frontend: `npm run dev`
+1. Setup: `cd frontend && npm install`
+2. Start the frontend: `npm run dev`
 
-## CORS Explanation
-CORS (Cross-Origin Resource Sharing) allows the React frontend to make requests to the FastAPI backend, which is running on a different port. This is necessary because web browsers enforce same-origin policy, which prevents a web page from making requests to a different origin (domain, protocol, or port) than the one it was loaded from. By configuring CORS in the FastAPI backend, we can allow the React frontend to make requests to the backend, enabling local communication between the two.
+### CORS
+CORS (Cross-Origin Resource Sharing) allows the React frontend to communicate with the FastAPI backend running on a different port. This is enabled in the FastAPI backend using the `CORSMiddleware`.
 
 ## Running the Project
-To run the project, follow the step-by-step commands above. The React frontend will be available at `http://localhost:5173`, and the FastAPI backend will be available at `http://localhost:8000`. The frontend will make requests to the backend to retrieve and submit data, and the backend will process and store the data in the in-memory data store.
+To run the project, follow the step-by-step commands above. The React frontend will be available at `http://localhost:5173`, and the FastAPI backend will be available at `http://localhost:8000`. The frontend will send API requests to the backend, which will process the requests and return responses. The in-memory data store will be updated accordingly.

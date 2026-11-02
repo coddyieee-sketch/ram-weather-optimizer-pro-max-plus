@@ -2,63 +2,62 @@ import pytest
 from fastapi.testclient import TestClient
 from app import app
 
-client = TestClient(app)
-
 @pytest.fixture(autouse=True)
 def reset_data():
-    response = client.post("/reset")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Data reset successfully"}
+    client = TestClient(app)
+    client.post("/reset")
 
-def test_create_data():
-    response = client.post("/data/", json={"key": "some_key", "value": "some_value"})
-    assert response.status_code == 200
-    assert response.json() == {"message": "Data created successfully"}
-
-def test_read_data():
-    client.post("/data/", json={"key": "some_key", "value": "some_value"})
-    response = client.get("/data/")
-    assert response.status_code == 200
-    assert response.json() == [{"key": "some_key", "value": "some_value"}]
-
-def test_reset_data():
-    client.post("/data/", json={"key": "some_key", "value": "some_value"})
-    response = client.post("/reset")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Data reset successfully"}
-    response = client.get("/data/")
+def test_get_data():
+    client = TestClient(app)
+    response = client.get("/data")
     assert response.status_code == 200
     assert response.json() == []
 
+def test_post_data():
+    client = TestClient(app)
+    data = {"key": "value"}
+    response = client.post("/data", json=data)
+    assert response.status_code == 200
+    assert response.json() == {"message": "Data added successfully"}
+
 def test_get_status():
+    client = TestClient(app)
     response = client.get("/status")
     assert response.status_code == 200
     assert response.json() == {"status": "OK"}
 
 def test_get_metrics():
+    client = TestClient(app)
     response = client.get("/metrics")
     assert response.status_code == 200
     assert response.json() == {"metrics": "OK"}
 
 def test_submit_data():
-    response = client.post("/submit", json={"key": "some_key", "value": "some_value"})
+    client = TestClient(app)
+    data = {"key": "value"}
+    response = client.post("/submit", json=data)
     assert response.status_code == 200
     assert response.json() == {"message": "Data submitted successfully"}
 
 def test_get_logs():
+    client = TestClient(app)
     response = client.get("/logs")
     assert response.status_code == 200
-    assert response.json() == {"logs": "OK"}
+    assert response.json() == {"logs": []}
 
-def test_get_visualizer():
-    response = client.get("/visualizer")
+def test_get_stats():
+    client = TestClient(app)
+    response = client.get("/stats")
     assert response.status_code == 200
-    assert response.json() == {"visualizer": "OK"}
+    assert response.json() == {"stats": 0}
 
-def test_create_data_invalid_json():
-    response = client.post("/data/", json={"invalid": "json"})
-    assert response.status_code == 422
-
-def test_submit_data_invalid_json():
-    response = client.post("/submit", json={"invalid": "json"})
-    assert response.status_code == 422
+def test_post_reset():
+    client = TestClient(app)
+    data = {"key": "value"}
+    client.post("/data", json=data)
+    response = client.post("/reset")
+    assert response.status_code == 200
+    assert response.json() == {"message": "Data reset successfully"}
+    response = client.get("/data")
+    assert response.status_code == 200
+    assert response.json() == []

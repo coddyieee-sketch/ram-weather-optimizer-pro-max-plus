@@ -2,7 +2,6 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
 load_dotenv()
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", "..", ".env"))
@@ -23,18 +22,14 @@ app.add_middleware(
 
 DATA_STORE = []
 
-class Data(BaseModel):
-    key: str
-    value: str
-
-@app.post("/data/")
-async def create_data(data: Data):
-    DATA_STORE.append(data.dict())
-    return {"message": "Data created successfully"}
-
-@app.get("/data/")
-async def read_data():
+@app.get("/data")
+async def get_data():
     return DATA_STORE
+
+@app.post("/data")
+async def post_data(data: dict):
+    DATA_STORE.append(data)
+    return {"message": "Data added successfully"}
 
 @app.post("/reset")
 async def reset_data():
@@ -51,14 +46,14 @@ async def get_metrics():
     return {"metrics": "OK"}
 
 @app.post("/submit")
-async def submit_data(data: Data):
-    DATA_STORE.append(data.dict())
+async def submit_data(data: dict):
+    DATA_STORE.append(data)
     return {"message": "Data submitted successfully"}
 
 @app.get("/logs")
 async def get_logs():
-    return {"logs": "OK"}
+    return {"logs": DATA_STORE}
 
-@app.get("/visualizer")
-async def get_visualizer():
-    return {"visualizer": "OK"}
+@app.get("/stats")
+async def get_stats():
+    return {"stats": len(DATA_STORE)}
